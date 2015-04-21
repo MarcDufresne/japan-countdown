@@ -43,8 +43,10 @@
         {% endif %}
     {% endif %}
 
+    <p class="small">The current date is {{ context.japan_time }}</p>
+
     {% if context.weather %}
-    <br><br><br>
+    <br>
         {% if context.weather.tokyo %}
             <p>
                 <span class="small bold">Tokyo</span>
