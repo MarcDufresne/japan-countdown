@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head lang="en">
     <meta charset="UTF-8">
     <title>Is it Japan yet?</title>
@@ -37,13 +37,22 @@
     {% if context.is_japan %}
         <p class="big bold">YES!</p>
     {% else %}
-        <p class="big bold">Nope</p>
-        {% if context.days_left > 0 %}
+        {% if context.days_left > 7 %}
+            <p class="big bold">Nope</p>
             <p class="small">But there are only {{ context.days_left }} days left</p>
+        {% elif context.days_left > 3 %}
+            <p class="big bold">Soon™</p>
+            <p class="small">Only {{ context.days_left }} days left!</p>
+        {% elif context.days_left >= 0 %}
+            <p class="big bold">Very Soon</p>
+            <p class="small"><span id="hours_left">{{ context.hours_left }}</span> hours remain</p>
+        {% else %}
+            <p class="big bold">It's over</p>
+            <p class="small">Hope you had fun!</p>
         {% endif %}
     {% endif %}
 
-    <p class="small">The current date is {{ context.japan_time }}</p>
+    <p class="small">The current date in Japan is <span id="japan_time">{{ context.japan_time }}</span></p>
 
     {% if context.weather %}
     <br>
@@ -66,6 +75,40 @@
             </p>
         {% endif %}
     {% endif %}
+
+    <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script>
+
+        setInterval(getTime, 20000);
+
+        function getTime(){
+            $.ajax({
+                'url': '/api/time'
+            }).done(function(data){
+                $('#japan_time').text(data.time)
+            });
+        }
+
+        {% if context.days_left < 3 and context.days_left >= 0 %}
+
+        setInterval(getHoursLeft, 1800000);
+
+        function getHoursLeft(){
+            $.ajax({
+                'url': '/api/hours_left'
+            }).done(function(data){
+                if (data.hours_left >= 0){
+                    $('#hours_left').text(data.hours_left)
+                }
+                else {
+                    location.reload(true);
+                }
+            });
+        }
+
+        {% endif %}
+
+    </script>
 
 </body>
 </html>
