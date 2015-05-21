@@ -30,7 +30,7 @@ def hello_world():
         'is_japan': is_japan,
         'weather': weather,
         'days_left': days_left.days,
-        'hours_left': hours_left.seconds // 3600,
+        'hours_left': (hours_left.seconds // 3600) + (hours_left.days * 24),
         'japan_time': japan_time
     }
 
